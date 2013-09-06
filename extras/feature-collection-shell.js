@@ -1,4 +1,4 @@
-define(null, function() {
+define(null, [], function() {
   var shell = {
     "id": "to_be_replaced_by_an_app_developer",
     "title": "fill_in_the_blank",

@@ -18,3 +18,9 @@ extras/feature-collection-shell.js:  JSON template for creating a feature collec
 See index.html for links to demos. This repo isn't set up for gh-pages since the useful demos require https.
 
 Tested in Chrome. No IE support as it relies on CORS to do a cross-domain POST to arcgis.com.
+
+To run unit tests, first run `npm install` at the command line. Then open a browser and enter the following URL:
+
+http://host/path/to/cereal/node_modules/intern/client.html?config=tests/intern
+
+Test results will appear in the console window.

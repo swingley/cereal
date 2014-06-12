@@ -1,0 +1,32 @@
+{
+  "name": "cereal",
+  "version": "0.0.1",
+  "description": "Attempt at creating a classes to serialize and write a JS API map to arcgis.com.",
+  "main": "index.html",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swingley/cereal.git"
+  },
+  "keywords": [
+    "arcgis",
+    "javascript",
+    "webmap",
+    "json",
+    "serialization"
+  ],
+  "author": "Derek Swingley",
+  "license": "Apache",
+  "bugs": {
+    "url": "https://github.com/swingley/cereal/issues"
+  },
+  "homepage": "https://github.com/swingley/cereal",
+  "devDependencies": {
+    "intern": "^1.7.0"
+  }
+}

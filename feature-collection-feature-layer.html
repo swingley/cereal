@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="//js.arcgis.com/3.16/esri/themes/calcite/dijit/calcite.css">
+    <link rel="stylesheet" href="//js.arcgis.com/3.16/esri/themes/calcite/esri/esri.css">
+    <style>
+      html, body, #map {
+        font-family: sans-serif;
+        height: 100%; width: 100%; margin: 0; padding: 0;
+      }
+      .shadow {
+        box-shadow: 0 0 5px #888;
+      }
+      #info {
+        background: #fff;
+        bottom: 20px;
+        color: #444;
+        position: absolute;
+        height: auto;
+        left: 20px;
+        padding: 1em;
+        text-align: right;
+        width: auto;
+        z-index: 40;
+      }
+      #info button {
+        display: block;
+        margin: 0.5em auto 0;
+        width: 12em;
+      }
+    </style>
+
+    <script>
+      var dojoConfig = {
+        packages: [{
+          name: "extras",
+          location: location.pathname.replace(/\/[^/]+$/, "") + "/extras"
+        }]
+      };
+    </script>
+    <script src="//js.arcgis.com/3.16/"></script>
+    <script>
+      var map, cereal, writer;
+
+      require([
+        "esri/map",
+        "esri/layers/FeatureLayer",
+        "extras/map-cereal",
+        "extras/map-writer",
+        "extras/feature-collection-hurricane",
+        "dojo/on",
+        "dojo/dom",
+        "dojo/domReady!"
+      ], function(
+        Map, FeatureLayer, Cereal, Writer, hurricane,
+        on, dom
+      ) {
+          map = new Map("map", {
+            basemap: "satellite",
+            center: [-82.169, 25.965],
+            zoom: 5
+          });
+
+          var featureLayer = new FeatureLayer(hurricane);
+          map.addLayer(featureLayer);
+
+          cereal = new Cereal({ map: map });
+          writer = new Writer({
+            map: map,
+            portalUrl: document.location.protocol + "//www.arcgis.com"
+          });
+
+          // listen for button click and save map to arcgis.com
+          on(dom.byId("save"), "click", function(evt) {
+            // get a title for the web map
+            var title = dom.byId("map-title").value|| "No title provided.";
+            writer.title = title;
+
+            // jsonify the map and push it to arcgis.com
+            cereal.toJSON().then(function(webmap){
+              console.log(webmap);
+              writer.save(webmap);
+            }, writer.error);
+          });
+        }
+      );
+    </script>
+  </head>
+  <body class="calcite">
+    <div id="info" class="shadow">
+      <label for="map-title">Map title:  </label>
+      <input type="text" id="map-title">
+      <br>
+      <button id="save">Save to ArcGIS.com</button>
+    </div>
+    <div id="map"></div>
+  </body>
+</html>

@@ -25,7 +25,7 @@
 // –ArcGISDynamicMapServiceLayer
 // –ArcGISImageServiceLayer
 // –WebTiledLayer
-// –FeatureLayer (created from URL, no support for feature layers from feature collections yet)
+// –FeatureLayer 
 // –GraphicsLayer (partial, no support for info templates or renderers)
 //
 // Need to support the following:
@@ -135,7 +135,7 @@ define([
           opLayers.push(this._serializeGraphics(layer));
         }
         if ( layer.declaredClass === "esri.layers.FeatureLayer") {
-          // console.log("cereal::feature layer", layer, layer.loaded);
+          console.log("cereal::feature layer", layer, layer.loaded);
           opLayers.push(this._serializeFeatures(layer));
         }
       }, this);
@@ -217,7 +217,7 @@ define([
     //    "format":"jpgpng",
     //    "mosaicRule":
     //       {
-    //         "mosaicMethod" : "<esriMosaicNone | esriMosaicCenter | esriMosaicNadir | esriMosaicViewpoint | 
+    //         "mosaicMethod" : "<esriMosaicNone | esriMosaicCenter | esriMosaicNadir | esriMosaicViewpoint |
     //                            esriMosaicAttribute | esriMosaicLockRaster | esriMosaicNorthwest | esriMosaicSeamline>",
     //         "where" : "<where>",
     //         "sortField" : "<sortFieldName>",
@@ -414,19 +414,25 @@ define([
 
     // return JSON for a feature layer
     _serializeFeatures: function(layer) {
-      // TODO:  support feature collections
-      // TODO:  support popupInfo
-      //
-      // mode is snapshot, on demand or selection
-      // corresponding integers are 0, 1, 2, repsectively
-      return {
+      var layerObject = {
         id: layer.id,
-        mode: layer.mode,
         opacity: layer.opacity,
         title: layer.name || layer.id,
-        url: layer.url,
         visibility: layer.visible
       };
+      if ( layer.url ) {
+        layerObject.url = layer.url;
+        // mode is snapshot, on demand or selection
+        // corresponding integers are 0, 1, 2, repsectively
+        layerObject.mode = layer.mode;
+      } else {
+        // feature layer from feature collection, serialize with .toJson()
+        layerObject.featureCollection = {
+          layers: [ layer.toJson() ]
+        }
+        layerObject.layerType = "ArcGISFeatureLayer";
+      }
+      return layerObject;
     },
 
     // return JSON for an ArcGISTiledMapServiceLayer

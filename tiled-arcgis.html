@@ -4,13 +4,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
     <title></title>
-    <link rel="stylesheet" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
+    <link rel="stylesheet" href="//js.arcgis.com/3.16/esri/themes/calcite/dijit/calcite.css">
+    <link rel="stylesheet" href="//js.arcgis.com/3.16/esri/themes/calcite/esri/esri.css">
     <style>
       html, body, #map {
-        height: 100%; width: 100%; margin: 0; padding: 0; 
+        height: 100%; width: 100%; margin: 0; padding: 0;
       }
     </style>
-    
+
     <script>
       var dojoConfig = {
         packages: [{
@@ -19,15 +20,15 @@
         }]
       };
     </script>
-    <script src="//js.arcgis.com/3.9/"></script>
+    <script src="//js.arcgis.com/3.16/"></script>
     <script>
       var map, cereal;
-    
+
       require([
         "esri/map",
         "esri/layers/ArcGISTiledMapServiceLayer",
         "esri/layers/FeatureLayer",
-        "extras/map-cereal", 
+        "extras/map-cereal",
         "dojo/domReady!"
       ], function(
         Map, Tiled, FeatureLayer, Cereal
@@ -36,7 +37,7 @@
 
           var tiled = new Tiled("https://mapserv.utah.gov/arcgis/rest/services/BaseMaps/Terrain/MapServer");
           map.addLayer(tiled);
-          
+
           cereal = new Cereal({ map: map });
           cereal.toJSON().then(logJson, error);
 
@@ -51,7 +52,7 @@
       );
     </script>
   </head>
-  <body>
+  <body class="calcite">
     <div id="map"></div>
   </body>
 </html>

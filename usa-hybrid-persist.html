@@ -3,16 +3,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title></title>
-    <link rel="stylesheet" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
-    <link rel="stylesheet" href="//js.arcgis.com/3.9/js/dojo/dijit/themes/nihilo/nihilo.css">
+    <link rel="stylesheet" href="//js.arcgis.com/3.16/esri/themes/calcite/dijit/calcite.css">
+    <link rel="stylesheet" href="//js.arcgis.com/3.16/esri/themes/calcite/esri/esri.css">
     <style>
       html, body, #map {
         font-family: sans-serif;
-        height: 100%; 
-        margin: 0; 
-        padding: 0; 
-        width: 100%; 
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
       }
       .shadow {
         box-shadow: 0 0 5px #888;
@@ -30,7 +29,7 @@
         z-index: 40;
       }
     </style>
-    
+
     <script>
       var dojoConfig = {
         packages: [{
@@ -40,15 +39,15 @@
       };
     </script>
     <!-- check the build date:  http://js.arcgis.com/3.6/builddate.txt -->
-    <script src="//js.arcgis.com/3.6/"></script>
+    <script src="//js.arcgis.com/3.16/"></script>
     <script>
       var map, cereal, writer;
-    
+
       require([
         "esri/map",
         "esri/layers/FeatureLayer",
-        "extras/map-cereal", 
-        "extras/map-writer", 
+        "extras/map-cereal",
+        "extras/map-writer",
 
         "dojo/_base/lang",
         "dojo/dom",
@@ -62,7 +61,7 @@
           basemap: "hybrid",
           center: [ -100, 40 ],
           zoom: 4,
-          slider: false 
+          slider: false
         });
 
         var usaUrl = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/2";
@@ -71,13 +70,13 @@
         });
         map.addLayer(fl);
 
-        // instance of class to serialize map to JSON that can be 
+        // instance of class to serialize map to JSON that can be
         // used to create a webmap on arcgis.com
-        cereal = new Cereal({ 
-          map: map 
+        cereal = new Cereal({
+          map: map
         });
 
-        writer = new MapWriter({ 
+        writer = new MapWriter({
           map: map,
           portalUrl: document.location.protocol + "//www.arcgis.com"
         });
@@ -94,7 +93,7 @@
       });
     </script>
   </head>
-  <body class="nihilo">
+  <body class="calcite">
     <div id="info" class="shadow">
       <label for="map-title">Map title:  </label>
       <input type="text" id="map-title">
@@ -104,4 +103,3 @@
     <div id="map"></div>
   </body>
 </html>
-

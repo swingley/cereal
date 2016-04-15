@@ -414,21 +414,122 @@ define([
 
     // return JSON for a feature layer
     _serializeFeatures: function(layer) {
-      // TODO:  support feature collections
+      // TODO:  support symbology for feature collections
       // TODO:  support popupInfo
       //
       // mode is snapshot, on demand or selection
       // corresponding integers are 0, 1, 2, repsectively
-      return {
-        id: layer.id,
-        mode: layer.mode,
-        opacity: layer.opacity,
-        title: layer.name || layer.id,
-        url: layer.url,
-        visibility: layer.visible
-      };
-    },
+      serizlizedFeatures = null
+      
+      //If Layer's URL is not Null, it's connected to a Map Service, Not A feature Collection, pretty straight forward
+      if (layer.url != null)
+      {
+          serizlizedFeatures = {
+            id: layer.id,
+            mode: layer.mode,
+            opacity: layer.opacity,
+            title: layer.name || layer.id,
+            url: layer.url,
+            visibility: layer.visible
+          };
+      }
+      //If the URL is NULL, then we have to searialize the entire feature collection.
+      else {
+            var serizlizedFeatures = lang.clone(FeatureCollectionShell);
+          
+            //Hard coding the Renderers.  At some point should serialize the renderers too
+            serizlizedFeatures.featureCollection.layers[0].layerDefinition.drawingInfo.renderer = {
+                symbol: {
+                  color: [
+                    0,
+                    0,
+                    128,
+                    128
+                  ],
+                  style: "esriSFSSolid",
+                  type: "esriSFS",
+                  outline: {
+                    color: [
+                        0,
+                        0,
+                        128,
+                        255
+                    ],
+                    width: 0.4,
+                    style: "esriSLSSolid",
+                    type: "esriSLS"
+                    }
+                },
+                type: "simple"
+            }
+            
+            serizlizedFeatures.featureCollection.layers[2].layerDefinition.drawingInfo.renderer = {
+                symbol: {
+                  color: [
+                    0,
+                    0,
+                    128,
+                    128
+                  ],
+                  style: "esriSMSCircle",
+                  type: "esriSMS",
+                  size: 9,
+                  angle: 0,
+                  xoffset: 0,
+                  yoffset: 0,
+                  outline: {
+                    color: [
+                        0,
+                        0,
+                        128,
+                        255
+                    ],
+                    width: 1,
+                    style: "esriSLSSolid",
+                    type: "esriSLS"
+                    }
+                },
+                type: "simple"                
+            }
+            
+            
+            serizlizedFeatures.id = layer.id;
+            serizlizedFeatures.mode = layer.mode;
+            serizlizedFeatures.title = layer.name || layer.id;
+            serizlizedFeatures.visibility = layer.visible;
+      
+            fcLayer = null
+            arrayUtils.forEach(serizlizedFeatures.featureCollection.layers, function(l) {
+                if ( l.layerDefinition.geometryType === layer.geometryType ) {
+                  fcLayer = l;
+                }
 
+            });
+
+            if (layer.infoTemplate != null){
+                fcLayer.popupInfo.title = layer.infoTemplate.info.title.replace(/\$/g, "");
+            }
+            fcLayer.nextObjectId = layer.graphics.length;
+          
+            var gObj = null
+            geoms = []
+            arrayUtils.forEach(layer.graphics, function(g, idx) {
+                gObj = g.toJson();
+                geoms.push(gObj)
+
+              });
+          
+            fields = geoms[0].attributes;
+            fcLayer.layerDefinition.fields = this._serializeFieldsDefs(fields);
+          
+            fcLayer.featureSet.geometryType = layer.geometryType
+            fcLayer.featureSet.features = geoms
+            serizlizedFeatures.featureCollection.layers = [fcLayer]
+      }
+        
+        return serizlizedFeatures;
+    },
+      
     // return JSON for an ArcGISTiledMapServiceLayer
     _serializeTiled: function(layer) {
       var tiled = {

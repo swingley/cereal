@@ -18,6 +18,9 @@ define([
     portalUrl: null,
     portalUser: null,
     title: null,
+    tags: "cereal",
+    snippet:"",
+    itemSaved:function(result){},
 
     constructor: function(options) {
       if ( !options.map ) {
@@ -62,20 +65,21 @@ define([
       var path = string.substitute(this.addItemTemplate, [this.portalUser.username]);
       var ge = this.map.geographicExtent;
       var extent = [ge.xmin, ge.ymin, ge.xmax, ge.ymax].join(",");
-
+          
       // 
       return esriRequest({
         url: this.portalUrl + path,
         content: {
           title: this.title,
-          tags: "cereal",
+          tags: this.tags,
           extent: extent,
           text: this.currentWebmap,
+          snippet: this.snippet,
           type: "Web Map",
           typeKeywords: "Web Map, Derek",
           f: "json"
         }
-      }, { usePost: true }).then(this._saveSuccessful, this._error);
+      }, { usePost: true }).then(lang.hitch(this,this._saveSuccessful), this._error);
     },
 
     _saveSuccessful: function(result) {
@@ -83,6 +87,8 @@ define([
       if ( result.success ) {
         this.currentWebmap = null;
         console.log("map-writer::_saveSuccessful", result);
+        //Alert the caller that the map has been saved successfully
+        this.itemSaved(result);
       } else {
         console.log("map-writer::_saveSuccessful request succeeded but result.success is not true...", result);
       }
